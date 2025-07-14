@@ -1,20 +1,20 @@
 package core;
 
-import algorithms.hashing.search.multi_strategy;
-import algorithms.hashing.search.search_strategy;
+import utils.multi_strategy;
+import utils.search_strategy;
 import utils.caesar_cipher;
+import utils.huffman_compressor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class vault_manager {
     private final Map<String, entry> vault = new HashMap<>();
     private final caesar_cipher cipher;
+    private final huffman_compressor huffman;
 
     public vault_manager(int shift) {
         cipher = new caesar_cipher(shift);
+        huffman = new huffman_compressor();
     }
 
     public boolean add(String name, String url, String username, String password) {
@@ -23,7 +23,8 @@ public class vault_manager {
         }
 
         String encrypted = cipher.encrypt(password);
-        entry e = new entry(name, url, username, encrypted);
+        String compressed = huffman.compress(encrypted);
+        entry e = new entry(name, url, username, compressed);
         vault.put(name, e);
         return true;
     }
@@ -50,29 +51,45 @@ public class vault_manager {
             return null;
         }
 
+        String decompressed = huffman.decompress(e.getPassword());
+        String decrypted = cipher.decrypt(decompressed);
         return new entry(
                 e.getName(),
                 e.getUrl(),
                 e.getUsername(),
-                cipher.decrypt(e.getPassword())
+                decrypted
         );
     }
 
-    public entry search_key(String key, search_strategy<String> strategy) {
-        List<String> keys = new ArrayList<>(vault.keySet());
-        String result = strategy.search_key(keys, key);
+    public List<entry> search_key(String key, search_strategy<String> strategy) {
+        List<String> list = new ArrayList<>(vault.keySet());
+        List<entry> result = new ArrayList<>();
 
-        if (result != null) {
-            return get(result);
+        if (key == null || key.isEmpty()) {
+            if (strategy instanceof algorithms.search.binary_search) {
+                Collections.sort(list);
+                for (String l : list) {
+                    result.add(get(l));
+                }
+            } else {
+                System.out.println("Linear search does not support full listing");
+            }
+        } else {
+            String results = strategy.search_key(list, key);
+
+            if (results != null) {
+                result.add(get(results));
+            }
         }
-        return null;
+        return result;
     }
 
     public List<String> search_values(String pattern, multi_strategy strategy) {
         List<String> values = new ArrayList<>();
 
         for (entry e : vault.values()) {
-            String decrypted = cipher.decrypt(e.getPassword());
+            String decompressed = huffman.decompress(e.getPassword());
+            String decrypted = cipher.decrypt(decompressed);
             values.add(decrypted);
         }
         return strategy.search(values, pattern);

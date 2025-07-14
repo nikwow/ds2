@@ -1,5 +1,9 @@
-import algorithms.hashing.search.*;
+import algorithms.search.binary_search;
+import algorithms.search.linear_search;
+import algorithms.search.rabin_karp;
 import core.*;
+import utils.multi_strategy;
+import utils.search_strategy;
 
 import java.util.*;
 
@@ -149,18 +153,42 @@ public class main {
                     break;
                 }
 
-                case 4:
-                case 5: {
+                case 4: {
                     System.out.println("Enter name to search: ");
-                    String key = scanner.nextLine().trim();
+                    String key =  scanner.nextLine().trim();
 
-                    search_strategy<String> strategy = (choice == 4) ? new linear_search() : new binary_search();
+                    if (key.isEmpty()) {
+                        System.out.println("Linear search requires a non-empty search key!");
+                        break;
+                    }
 
-                    entry found = vm.search_key(key, strategy);
-                    if (found != null) {
-                        System.out.println("Entry found sucessfully:\n" + found);
+                    search_strategy<String> linear = new linear_search();
+                    List<entry> found = vm.search_key(key, linear);
+
+                    if (found.isEmpty()) {
+                        System.out.println("No such entry found!");
                     } else {
-                        System.out.println("Entry not found!");
+                        for (entry e : found) {
+                            System.out.println(e);
+                            System.out.println("--------------------");
+                        }
+                    }
+                    break;
+                }
+
+                case 5: {
+                    String key =  null;
+
+                    search_strategy<String> binary = new binary_search();
+                    List<entry> found = vm.search_key(key, binary);
+
+                    if (found.isEmpty()) {
+                        System.out.println("No such entry found!");
+                    } else {
+                        for (entry e : found) {
+                            System.out.println(e);
+                            System.out.println("--------------------");
+                        }
                     }
                     break;
                 }
@@ -168,6 +196,7 @@ public class main {
                 case 6:
                     System.out.println("Enter password pattern to search: ");
                     String pattern = scanner.nextLine();
+                    scanner.nextLine();
                     multi_strategy rk = new rabin_karp();
 
                     List<String> matches = vm.search_values(pattern, rk);

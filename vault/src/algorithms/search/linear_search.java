@@ -1,4 +1,6 @@
-package algorithms.hashing.search;
+package algorithms.search;
+
+import utils.search_strategy;
 
 import java.util.List;
 

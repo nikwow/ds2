@@ -1,9 +1,11 @@
-package algorithms.hashing.search;
+package algorithms.search;
+
+import utils.multi_strategy;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class rabin_karp implements multi_strategy{
+public class rabin_karp implements multi_strategy {
     private static final int d = 256;
     private static final int q = 101;
 
