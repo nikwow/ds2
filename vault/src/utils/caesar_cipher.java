@@ -1,10 +1,13 @@
 package utils;
 
 public class caesar_cipher {
-    private final int shift;
+    private int shift;
 
     public caesar_cipher(int shift) {
         this.shift = shift % 26;
+        if (this.shift < 0) {
+            this.shift += 26;
+        }
     }
 
     public String encrypt(String text) {
@@ -12,9 +15,11 @@ public class caesar_cipher {
 
         for (char c : text.toCharArray()) {
             if (Character.isLetter(c)) {
-                sb.append((char) ('a' + (c - 'a' + shift) % 26));
-            } else if (Character.isDigit(c)) {
-                sb.append((char) ('A' + (c - 'A' + shift) % 26));
+                if (Character.isLowerCase(c)) {
+                    sb.append((char) ('a' + (c - 'a' + shift) % 26));
+                } else {
+                    sb.append((char) ('A' + (c - 'A' + shift) % 26));
+                }
             } else {
                 sb.append(c);
             }

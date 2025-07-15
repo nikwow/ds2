@@ -14,10 +14,22 @@ public class binary_search implements search_strategy<String> {
             return null;
         }
 
-        int index = Collections.binarySearch(list, key);
+        int low = 0;
+        int high = list.size() - 1;
 
-        if (index >= 0) {
-            return list.get(index);
+        while (low <= high) {
+            int mid = (low + high) / 2;
+
+            String mid_value = list.get(mid);
+            int com = key.compareTo(mid_value);
+
+            if (com == 0) {
+                return mid_value;
+            } else if (com < 0) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
         }
         return null;
     }

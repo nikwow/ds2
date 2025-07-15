@@ -29,6 +29,9 @@ public class rabin_karp implements multi_strategy {
             return false;
         }
 
+        text = text.toLowerCase();
+        pattern = pattern.toLowerCase();
+
         int h = 1;
 
         for (int i = 0; i < m - 1; i++) {

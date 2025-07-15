@@ -1,9 +1,6 @@
-import algorithms.search.binary_search;
-import algorithms.search.linear_search;
-import algorithms.search.rabin_karp;
+import algorithms.search.*;
 import core.*;
-import utils.multi_strategy;
-import utils.search_strategy;
+import utils.*;
 
 import java.util.*;
 
@@ -195,8 +192,7 @@ public class main {
 
                 case 6:
                     System.out.println("Enter password pattern to search: ");
-                    String pattern = scanner.nextLine();
-                    scanner.nextLine();
+                    String pattern = scanner.nextLine().trim();
                     multi_strategy rk = new rabin_karp();
 
                     List<String> matches = vm.search_values(pattern, rk);
